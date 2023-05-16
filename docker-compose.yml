@@ -1,0 +1,42 @@
+version: '3'
+services:
+  jenkins:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '9090:8080'
+#      - '8181:8181'
+      - '50000:50000'
+    volumes:
+      - './jenkins_home:/var/jenkins_home'
+      - './docker.sock:/var/run/docker.sock'
+    networks:
+      - payara
+
+  payara:
+    image: payara/server-web:4.181
+    ports:
+      - '4848:4848'
+      - '8080:8080'
+      - '8181:8181'
+    networks:
+      - payara
+  # payara-micro:
+  #   image: payara/micro
+  #   ports:
+  #     - '8080:8080'
+  #     - '4848:4848'
+  #   volumes:
+  #     - './payara/deployments:/opt/payara/deployments'
+  #/var/jenkins_home/deploy-payara-micro.sh
+  #   networks:
+  #     - payara
+
+volumes:
+  jenkins_home:
+    driver: local
+
+networks:
+  payara:
+    driver: bridge
